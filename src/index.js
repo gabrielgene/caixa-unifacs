@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import Store from './pages/store';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
 
@@ -10,7 +11,7 @@ const App = () => (
   <Router>
     <div>
       <Route exact path="/" component={Comp} />
-      <Route path="/caixa" component={Comp} />
+      <Route path="/caixa" component={Store} />
       <Route path="/caixa/pagamento" component={Comp} />
 
       <Route path="/cadastro" component={Comp} />
