@@ -1,8 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import './index.css';
-import App from './App';
 import * as serviceWorker from './serviceWorker';
+
+const Comp = () => <h1>Comp</h1>;
+
+const App = () => (
+  <Router>
+    <div>
+      <Route exact path="/" component={Comp} />
+      <Route path="/caixa" component={Comp} />
+      <Route path="/caixa/pagamento" component={Comp} />
+
+      <Route path="/cadastro" component={Comp} />
+      <Route path="/cadastro/login" component={Comp} />
+    </div>
+  </Router>
+);
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
