@@ -10,13 +10,12 @@ import StoreLogin from './pages/Login/Store';
 import Register from './pages/Register';
 
 const Comp = () => <h1>Comp</h1>;
-const Caixa = () => <h1>Caixa</h1>;
 
 const App = () => (
   <Router>
     <div>
       <Route exact path="/" component={StoreLogin} />
-      <Route exact path="/caixa" component={Caixa} />
+      <Route exact path="/caixa" component={Store} />
       <Route exact path="/caixa/pagamento" component={Comp} />
 
       <Route exact path="/cadastro" component={Register} />

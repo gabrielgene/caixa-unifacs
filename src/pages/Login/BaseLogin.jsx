@@ -66,7 +66,7 @@ class BaseLogin extends Component {
           <Typography
             color={isAdmin ? 'primary' : 'secondary'}
             className={classes.title}
-            variant="display3"
+            variant="h3"
           >
             {isAdmin ? 'Cadastro' : 'Caixa'}
           </Typography>
@@ -98,14 +98,14 @@ class BaseLogin extends Component {
           {this.state.hasError &&
             <Typography
               color='error'
-              variant="subheading"
+              variant="subtitle1"
             >
               usuario errado
             </Typography>
           }
           <Button
             className={classes.button}
-            variant="raised"
+            variant="contained"
             color={isAdmin ? 'primary' : 'secondary'}
             onClick={this.onSubmit}
           >
