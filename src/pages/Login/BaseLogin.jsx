@@ -95,6 +95,14 @@ class BaseLogin extends Component {
             onChange={this.handleChange('pass')}
             margin="normal"
           />
+          {this.state.hasError &&
+            <Typography
+              color='error'
+              variant="subheading"
+            >
+              usuario errado
+            </Typography>
+          }
           <Button
             className={classes.button}
             variant="raised"
@@ -103,8 +111,6 @@ class BaseLogin extends Component {
           >
             Entrar
           </Button>
-            {this.state.hasError ?
-          <span> usuario errado </span> : null}
         </div>
       </div>
     )

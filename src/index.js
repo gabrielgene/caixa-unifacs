@@ -7,10 +7,10 @@ import * as serviceWorker from './serviceWorker';
 
 import AdminLogin from './pages/Login/Admin';
 import StoreLogin from './pages/Login/Store';
+import Register from './pages/Register';
 
 const Comp = () => <h1>Comp</h1>;
 const Caixa = () => <h1>Caixa</h1>;
-const Cadastro = () => <h1>Cadastro</h1>;
 
 const App = () => (
   <Router>
@@ -19,7 +19,7 @@ const App = () => (
       <Route exact path="/caixa" component={Caixa} />
       <Route exact path="/caixa/pagamento" component={Comp} />
 
-      <Route exact path="/cadastro" component={Cadastro} />
+      <Route exact path="/cadastro" component={Register} />
       <Route exact path="/cadastro/login" component={AdminLogin} />
     </div>
   </Router>
