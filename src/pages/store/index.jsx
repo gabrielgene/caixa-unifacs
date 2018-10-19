@@ -5,22 +5,17 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemText from '@material-ui/core/ListItemText';
-import IconButton from '@material-ui/core/IconButton';
-import Avatar from '@material-ui/core/Avatar';
 import CloseIcon from '@material-ui/icons/Close';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import IconButton from '@material-ui/core/IconButton';
+import ShopIcon from '@material-ui/icons/ShoppingCartOutlined';
 import InputAdornment from '@material-ui/core/InputAdornment';
 
 const products = {
   1: {
     id: 1,
-    name: 'Arroz',
+    name: 'Arroz Tio João',
     value: 7,
     image:
       'https://www.paodeacucar.com/img/uploads/1/678/510678.jpg?type=product'
@@ -97,12 +92,27 @@ const styles = theme => ({
   grow: {
     flexGrow: 1
   },
-  menuButton: {
-    marginLeft: -12,
-    marginRight: 20
-  },
   content: {
     display: 'flex'
+  },
+  product: {
+    width: '50%',
+    padding: 16
+  },
+  productList: {
+    width: '30%',
+    padding: 16,
+    backgroundColor: '#fafafa'
+  },
+  productResume: {
+    width: '20%',
+    backgroundColor: '#fafafa',
+    display: 'flex',
+    height: 'calc(100vh - 96px)',
+    padding: 16,
+    marginLeft: 8,
+    flexDirection: 'column',
+    justifyContent: 'flex-end'
   },
   sideView: {
     width: '40%',
@@ -123,6 +133,13 @@ const styles = theme => ({
   },
   button: {
     marginTop: 24
+  },
+  icon: {
+    marginLeft: 8,
+    marginRight: 8
+  },
+  caption: {
+    marginBottom: 12
   }
 });
 
@@ -188,48 +205,168 @@ class Store extends React.Component {
 
     return (
       <div className={classes.root}>
-        <AppBar position="static">
+        <AppBar position="static" style={{ boxShadow: 'none' }}>
           <Toolbar>
+            <ShopIcon className={classes.icon} />
             <Typography variant="h6" color="inherit" className={classes.grow}>
-              Caixa
+              Meu Caixa
             </Typography>
           </Toolbar>
         </AppBar>
         <div className={classes.content}>
-          <div className={classes.sideView}>
-            <Card>
-              <CardContent>
-                <Typography component="h3" variant="h3">
-                  R$ {value}
-                </Typography>
-              </CardContent>
-            </Card>
-            <div className={classes.demo}>
-              <List dense>
-                {items.map((p, idx) => (
-                  <ListItem key={p.id}>
-                    {idx + 1}
-                    <ListItemAvatar>
-                      <Avatar src={p.image} />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={p.name}
-                      secondary={`Quantidade: ${p.qtd} - Valor: R$ ${
-                        p.prodValue
-                      }`}
-                    />
-                    <ListItemSecondaryAction>
-                      <IconButton
-                        aria-label="Delete"
-                        onClick={() => this.onDelete(idx)}
-                      >
-                        <CloseIcon />
-                      </IconButton>
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                ))}
-              </List>
+          <div className={classes.product}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <TextField
+                title="Temos produtos do codigo 1 até o 10"
+                id="outlined-name"
+                label="Codigo do produto"
+                className={classes.input}
+                value={cod}
+                onChange={this.handleChangeCod}
+                margin="normal"
+                variant="outlined"
+              />
+              <TextField
+                id="outlined-name"
+                label="Quantidade"
+                className={classes.input}
+                value={qtd}
+                onChange={this.handleChangeAmount}
+                margin="normal"
+                type="number"
+                variant="outlined"
+              />
+              <Button
+                style={{ height: 56 }}
+                variant="contained"
+                color="primary"
+                size="large"
+                disabled={!cod}
+                onClick={this.onAddItem}
+              >
+                Adicionar
+              </Button>
             </div>
+            <div>
+              {cod && (
+                <Card>
+                  <CardContent>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <div>
+                        <img src={img} style={{ width: 300 }} alt="produto" />
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex' }}>
+                      <TextField
+                        id="outlined-name"
+                        label="Descrição"
+                        className={classes.input}
+                        value={prodName}
+                        margin="normal"
+                        variant="outlined"
+                        disabled
+                      />
+                      <TextField
+                        id="outlined-name"
+                        label="Valor unitário"
+                        className={classes.input}
+                        value={Math.round(prodValue)}
+                        margin="normal"
+                        variant="outlined"
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">$</InputAdornment>
+                          )
+                        }}
+                        disabled
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </div>
+          <div className={classes.productList}>
+            <Typography
+              variant="h5"
+              style={{ fontWeight: 800, marginBottom: 8 }}
+            >
+              Produtos no carrinho
+            </Typography>
+            <Typography variant="caption" className={classes.caption}>
+              {items.length} produtos
+            </Typography>
+            {items.map((p, idx) => (
+              <Card
+                style={{
+                  boxShadow: 'none',
+                  border: '1px solid #ececec',
+                  padding: 16,
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  marginBottom: 8
+                }}
+              >
+                <div style={{ display: 'flex' }}>
+                  <div>
+                    <img src={p.image} style={{ width: 50 }} alt="produto" />
+                  </div>
+                  <div style={{ marginLeft: 16 }}>
+                    <div style={{ marginBottom: 4 }}>{p.name}</div>
+                    <Typography variant="caption" style={{ marginBottom: 4 }}>
+                      {`Quantidade: ${p.qtd}`}
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      style={{ fontWeight: 800, color: 'rgba(0, 0, 0, 0.8)' }}
+                    >
+                      {`Preço: R$ ${p.prodValue}`}
+                    </Typography>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <IconButton onClick={() => this.onDelete(idx)}>
+                    <CloseIcon />
+                  </IconButton>
+                </div>
+              </Card>
+            ))}
+          </div>
+          <div className={classes.productResume}>
+            <Typography variant="subtitle2" style={{ marginBottom: 8 }}>
+              Total
+            </Typography>
+            <Typography variant="h3" style={{ marginBottom: 8 }}>
+              {`R$ ${value}`}
+            </Typography>
+            <div
+              style={{
+                display: 'flex',
+                height: 30,
+                justifyContent: 'space-between',
+                width: '100%'
+              }}
+            >
+              <Button
+                variant="contained"
+                color="secondary"
+                size="large"
+                style={{ minWidth: 50 }}
+                onClick={() => this.setState({ ...defaultState })}
+              >
+                X
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                onClick={() => this.setState({ empty: true })}
+              >
+                Concluir Compra
+              </Button>
+            </div>
+          </div>
+          {/* <div className={classes.sideView}>
             <Card>
               <CardContent>
                 <Typography component="h3" variant="h3">
@@ -237,24 +374,6 @@ class Store extends React.Component {
                 </Typography>
               </CardContent>
             </Card>
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-              size="large"
-              onClick={() => this.setState({ empty: true })}
-            >
-              Concluir Compra
-            </Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              fullWidth
-              size="large"
-              onClick={() => this.setState({ ...defaultState })}
-            >
-              Cancelar Venda
-            </Button>
           </div>
           <div>
             <div className={classes.info}>
@@ -315,7 +434,7 @@ class Store extends React.Component {
             <div>
               {img && <img src={img} style={{ width: 300 }} alt="produto" />}
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     );
