@@ -8,15 +8,14 @@ import * as serviceWorker from './serviceWorker';
 import AdminLogin from './pages/Login/Admin';
 import StoreLogin from './pages/Login/Store';
 import Register from './pages/Register';
-
-const Comp = () => <h1>Comp</h1>;
+import Payment from './pages/payment';
 
 const App = () => (
   <Router>
     <Switch>
       <Route exact path="/" component={StoreLogin} />
       <Route exact path="/caixa" component={Store} />
-      <Route exact path="/caixa/pagamento" component={Comp} />
+      <Route exact path="/caixa/pagamento" component={Payment} />
 
       <Route exact path="/cadastro" component={Register} />
       <Route exact path="/cadastro/login" component={AdminLogin} />
