@@ -186,7 +186,8 @@ class Store extends React.Component {
     const { cod, items, qtd, prodValue, value } = this.state;
     this.setState({
       items: [...items, { ...products[cod], qtd, prodValue }],
-      value: value + prodValue
+      value: value + prodValue,
+      cod: ''
     });
   };
 
@@ -200,7 +201,7 @@ class Store extends React.Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, history } = this.props;
     const { img, value, prodValue, prodName, cod, qtd, items } = this.state;
 
     return (
@@ -211,6 +212,13 @@ class Store extends React.Component {
             <Typography variant="h6" color="inherit" className={classes.grow}>
               Meu Caixa
             </Typography>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => history.push('/')}
+            >
+              Sair
+            </Button>
           </Toolbar>
         </AppBar>
         <div className={classes.content}>
@@ -219,7 +227,7 @@ class Store extends React.Component {
               <TextField
                 title="Temos produtos do codigo 1 até o 10"
                 id="outlined-name"
-                label="Codigo do produto"
+                label="Código do produto"
                 className={classes.input}
                 value={cod}
                 onChange={this.handleChangeCod}
@@ -289,15 +297,21 @@ class Store extends React.Component {
           <div className={classes.productList}>
             <Typography
               variant="h5"
+              gutterBottom
               style={{ fontWeight: 800, marginBottom: 8 }}
             >
               Produtos no carrinho
             </Typography>
-            <Typography variant="caption" className={classes.caption}>
+            <Typography
+              variant="caption"
+              gutterBottom
+              className={classes.caption}
+            >
               {items.length} produtos
             </Typography>
             {items.map((p, idx) => (
               <Card
+                key={p.id}
                 style={{
                   boxShadow: 'none',
                   border: '1px solid #ececec',
@@ -312,12 +326,19 @@ class Store extends React.Component {
                     <img src={p.image} style={{ width: 50 }} alt="produto" />
                   </div>
                   <div style={{ marginLeft: 16 }}>
-                    <div style={{ marginBottom: 4 }}>{p.name}</div>
-                    <Typography variant="caption" style={{ marginBottom: 4 }}>
+                    <div style={{ marginBottom: 4 }}>{`${idx + 1} - ${
+                      p.name
+                    }`}</div>
+                    <Typography
+                      variant="caption"
+                      gutterBottom
+                      style={{ marginBottom: 4 }}
+                    >
                       {`Quantidade: ${p.qtd}`}
                     </Typography>
                     <Typography
                       variant="caption"
+                      gutterBottom
                       style={{ fontWeight: 800, color: 'rgba(0, 0, 0, 0.8)' }}
                     >
                       {`Preço: R$ ${p.prodValue}`}
@@ -333,10 +354,14 @@ class Store extends React.Component {
             ))}
           </div>
           <div className={classes.productResume}>
-            <Typography variant="subtitle2" style={{ marginBottom: 8 }}>
+            <Typography
+              variant="subtitle2"
+              gutterBottom
+              style={{ marginBottom: 8 }}
+            >
               Total
             </Typography>
-            <Typography variant="h3" style={{ marginBottom: 8 }}>
+            <Typography variant="h3" gutterBottom style={{ marginBottom: 8 }}>
               {`R$ ${value}`}
             </Typography>
             <div
@@ -360,81 +385,17 @@ class Store extends React.Component {
                 variant="contained"
                 color="primary"
                 size="large"
-                onClick={() => this.setState({ empty: true })}
+                onClick={() =>
+                  history.push({
+                    pathname: '/caixa/pagamento',
+                    state: this.state
+                  })
+                }
               >
-                Concluir Compra
+                Fechar Venda
               </Button>
             </div>
           </div>
-          {/* <div className={classes.sideView}>
-            <Card>
-              <CardContent>
-                <Typography component="h3" variant="h3">
-                  Itens: {items.length}
-                </Typography>
-              </CardContent>
-            </Card>
-          </div>
-          <div>
-            <div className={classes.info}>
-              <TextField
-                title="Temos produtos do codigo 1 até o 10"
-                id="outlined-name"
-                label="Codigo do produto"
-                className={classes.input}
-                value={cod}
-                onChange={this.handleChangeCod}
-                margin="normal"
-                variant="outlined"
-              />
-              <TextField
-                id="outlined-name"
-                label="Quantidade"
-                className={classes.input}
-                value={qtd}
-                onChange={this.handleChangeAmount}
-                margin="normal"
-                type="number"
-                variant="outlined"
-              />
-              <TextField
-                id="outlined-name"
-                label="Descrição"
-                className={classes.input}
-                value={prodName}
-                margin="normal"
-                variant="outlined"
-                disabled
-              />
-              <TextField
-                id="outlined-name"
-                label="Valor"
-                className={classes.input}
-                value={Math.round(prodValue)}
-                margin="normal"
-                variant="outlined"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">$</InputAdornment>
-                  )
-                }}
-                disabled
-              />
-            </div>
-            <Button
-              variant="contained"
-              color="secondary"
-              size="large"
-              fullWidth
-              disabled={!cod}
-              onClick={this.onAddItem}
-            >
-              Adicionar
-            </Button>
-            <div>
-              {img && <img src={img} style={{ width: 300 }} alt="produto" />}
-            </div>
-          </div> */}
         </div>
       </div>
     );
