@@ -23,6 +23,10 @@ const styles = theme => ({
   button: {
     marginTop: theme.spacing.unit * 2,
   },
+  register: {
+    cursor: 'pointer',
+    marginTop: theme.spacing.unit * 2,
+  },
 });
 
 class BaseLogin extends Component {
@@ -111,6 +115,14 @@ class BaseLogin extends Component {
           >
             Entrar
           </Button>
+          <Typography
+            color={isAdmin ? 'secondary' : 'primary'}
+            className={classes.register}
+            variant="body2"
+            onClick={() => this.props.history.push(isAdmin ? '/' : '/cadastro/login')}
+          >
+            {isAdmin ? 'Usar como caixa' : 'Usar como admin'}
+          </Typography>
         </div>
       </div>
     )
