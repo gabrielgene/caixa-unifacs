@@ -14,6 +14,9 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 const styles = theme => ({
   root: {
@@ -66,6 +69,7 @@ class Payment extends React.Component {
     change: 0,
     cardNumber: '',
     cardCvv: '',
+    isConfirming: false,
   };
 
   componentDidMount() {
@@ -76,13 +80,28 @@ class Payment extends React.Component {
 
   handleChange = event => {
     const { name, value } = event.target;
-    if (name === 'paymentMode' && value === 10) {
+    if (name === 'paymentMode') {
       this.setState({
-        payedValue: this.props.location.state.value,
+        cardNumber: '',
+        cardCvv: '',
+        payedValue: value === 10 ? this.props.location.state.value : 0,
       });
     }
     this.setState({ [name]: value });
   };
+
+  dialogClose = () => {
+    this.setState({
+      isConfirming: false,
+    })
+  }
+
+  dialogOpen = () => {
+    this.setState({
+      isConfirming: true,
+    })
+  }
+
 
   clean = () => {
     this.setState({
@@ -93,7 +112,10 @@ class Payment extends React.Component {
       change: 0,
       cardNumber: '',
       cardCvv: '',
+      isConfirming: false,
     })
+
+    this.dialogClose()
   }
 
   render() {
@@ -271,11 +293,28 @@ class Payment extends React.Component {
             variant="contained"
             color="secondary"
             disabled={buttonDisabled}
-            onClick={this.clean}
+            onClick={this.dialogOpen}
           >
 
             {paymentMode === 30 ? 'Só amanhã' : 'Fechar Compra'}
+          </Button>
+
+          <Dialog
+            open={this.state.isConfirming}
+            onClose={this.dialogClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">{"Deseja finalizar compra?"}</DialogTitle>
+            <DialogActions>
+              <Button onClick={this.dialogClose} color="primary">
+              Voltar
             </Button>
+              <Button onClick={this.clean} color="primary" autoFocus>
+              Finalizar
+            </Button>
+            </DialogActions>
+          </Dialog>
         </div>
       </div>
     );
