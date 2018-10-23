@@ -3,6 +3,7 @@ import classNames from 'classnames';
 
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import Card from '@material-ui/core/Card';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import MoneyIcon from '@material-ui/icons/AttachMoneyOutlined';
@@ -24,13 +25,13 @@ const styles = theme => ({
   formControl: {
     marginBottom: theme.spacing.unit,
     marginTop: theme.spacing.unit,
-    minWidth: 120,
+    minWidth: 120
   },
   formControlMedium: {
-    minWidth: 350,
+    minWidth: 350
   },
   formControlInline: {
-    marginRight: 16,
+    marginRight: 16
   },
   selectEmpty: {
     marginTop: theme.spacing.unit * 2
@@ -38,6 +39,10 @@ const styles = theme => ({
   icon: {
     marginLeft: 8,
     marginRight: 8
+  },
+  productListContent: {
+    height: 'calc(100vh - 148px)',
+    overflow: 'auto'
   }
 });
 
@@ -65,7 +70,7 @@ class Payment extends React.Component {
     payedValue: 0,
     change: 0,
     cardNumber: '',
-    cardCvv: '',
+    cardCvv: ''
   };
 
   componentDidMount() {
@@ -78,7 +83,7 @@ class Payment extends React.Component {
     const { name, value } = event.target;
     if (name === 'paymentMode' && value === 10) {
       this.setState({
-        payedValue: this.props.location.state.value,
+        payedValue: this.props.location.state.value
       });
     }
     this.setState({ [name]: value });
@@ -92,9 +97,9 @@ class Payment extends React.Component {
       payedValue: 0,
       change: 0,
       cardNumber: '',
-      cardCvv: '',
-    })
-  }
+      cardCvv: ''
+    });
+  };
 
   render() {
     const { classes, location, history } = this.props;
@@ -105,11 +110,9 @@ class Payment extends React.Component {
       history.push('/caixa');
     }
 
-    const change = payedValue - location.state.value
+    const change = payedValue - location.state.value;
 
-    const buttonDisabled = !((!!cardNumber && !!cardCvv) || !!payedValue)
-
-    console.log(this.state);
+    const buttonDisabled = !((!!cardNumber && !!cardCvv) || !!payedValue);
 
     return (
       <div>
@@ -129,153 +132,195 @@ class Payment extends React.Component {
             </Button>
           </Toolbar>
         </AppBar>
-        <div style={{ padding: 16 }}>
-          <div style={{ display: 'flex', alignItems: 'center', padding: 8 }}>
-            <img
-              style={{ width: 100, borderRadius: 60, padding: 8 }}
-              alt="cliente"
-              src={
-                user
-                  ? clientes[cod].image
-                  : 'https://i0.wp.com/azizilife.com/wp-content/uploads/2016/09/placeholder.jpg?ssl=1'
-              }
-            />
-            <div>
-              <Typography
-                variant="h5"
-                gutterBottom
-                style={{ fontWeight: 800, marginBottom: 8 }}
-              >
-                {user ? clientes[cod].name : ''}
-              </Typography>
-              <Typography
-                variant="caption"
-                gutterBottom
-                className={classes.caption}
-              >
-                {user ? `Código: ${cod}` : ''}
-              </Typography>
+        <div style={{ display: 'flex' }}>
+          <div style={{ padding: 16, width: '70%' }}>
+            <div style={{ display: 'flex', alignItems: 'center', padding: 8 }}>
+              <img
+                style={{ width: 100, borderRadius: 60, padding: 8 }}
+                alt="cliente"
+                src={
+                  user
+                    ? clientes[cod].image
+                    : 'https://i0.wp.com/azizilife.com/wp-content/uploads/2016/09/placeholder.jpg?ssl=1'
+                }
+              />
+              <div>
+                <Typography
+                  variant="h5"
+                  gutterBottom
+                  style={{ fontWeight: 800, marginBottom: 8 }}
+                >
+                  {user ? clientes[cod].name : ''}
+                </Typography>
+                <Typography
+                  variant="caption"
+                  gutterBottom
+                  className={classes.caption}
+                >
+                  {user ? `Código: ${cod}` : ''}
+                </Typography>
+              </div>
             </div>
-          </div>
-          <FormControl
-            fullWidth
-            variant="outlined"
-            className={classes.formControl}
-          >
-            <TextField
-              onChange={this.handleChange}
-              name="cod"
-              value={cod}
-              id="outlined-name"
-              label="Código do cliente"
-              variant="outlined"
-            />
-          </FormControl>
-
-          <form className={classes.root} autoComplete="off">
             <FormControl
               fullWidth
               variant="outlined"
               className={classes.formControl}
             >
-              <InputLabel
-                ref={ref => {
-                  this.InputLabelRef = ref;
-                }}
-                htmlFor="outlined-age-simple"
-              >
-                Forma de pagamento
-              </InputLabel>
-              <Select
-                value={paymentMode}
+              <TextField
                 onChange={this.handleChange}
-                disabled={!user}
-                input={
-                  <OutlinedInput
-                    labelWidth={this.state.labelWidth}
-                    name="paymentMode"
-                    id="outlined-age-simple"
-                  />
-                }
-              >
-                <MenuItem value={10}>Cartão</MenuItem>
-                <MenuItem value={20}>A vista</MenuItem>
-                <MenuItem value={30}>Fiado</MenuItem>
-              </Select>
+                name="cod"
+                value={cod}
+                id="outlined-name"
+                label="Código do cliente"
+                variant="outlined"
+              />
             </FormControl>
-            {paymentMode === 10 && (
-              <div>
-                <FormControl
-                  variant="outlined"
-                  className={
-                    classNames(classes.formControl, classes.formControlInline, classes.formControlMedium)
-                  }
-                >
-                  <TextField
-                    onChange={this.handleChange}
-                    name="cardNumber"
-                    value={cardNumber}
-                    id="outlined-number-card"
-                    label="Numero do cartão"
-                    variant="outlined"
-                  />
-                </FormControl>
-                <FormControl
-                  variant="outlined"
-                  className={classNames(classes.formControl, classes.formControlInline)}
-                >
-                  <TextField
-                    onChange={this.handleChange}
-                    name="cardCvv"
-                    value={cardCvv}
-                    id="outlined-number-cvv"
-                    label="Cvv"
-                    variant="outlined"
-                  />
-                </FormControl>
-              </div>
-            )}
-            {paymentMode === 20 && (
-              <div>
-                <FormControl
-                  variant="outlined"
-                  className={
-                    classNames(classes.formControl, classes.formControlInline, classes.formControlMedium)
-                  }
-                >
-                  <TextField
-                    onChange={this.handleChange}
-                    name="payedValue"
-                    value={this.state.payedValue}
-                    id="outlined-payed-value"
-                    label="Valor pago"
-                    variant="outlined"
-                  />
-                </FormControl>
-              </div>
-            )}
-          </form>
-          <h3>Total da compra R$ {location.state.value}</h3>
-          <h3>Valor pago R$ {this.state.payedValue}</h3>
-          <h3>Troco R$ {change > 0 ? change : 0}</h3>
-          {/* {location.state.items.map(p => (
-            <div>
-              <img src={p.image} style={{ width: 100 }} alt="produto" />
-              <h3>{p.name}</h3>
-              <h3>{`R$ ${p.prodValue}`}</h3>
-              <h3>{`Quantidade: ${p.qtd}`}</h3>
-            </div>
-          ))} */}
-          <Button
-            style={{ position: 'absolute', right: 24 }}
-            variant="contained"
-            color="secondary"
-            disabled={buttonDisabled}
-            onClick={this.clean}
-          >
 
-            {paymentMode === 30 ? 'Só amanhã' : 'Fechar Compra'}
+            <form className={classes.root} autoComplete="off">
+              <FormControl
+                fullWidth
+                variant="outlined"
+                className={classes.formControl}
+              >
+                <InputLabel
+                  ref={ref => {
+                    this.InputLabelRef = ref;
+                  }}
+                  htmlFor="outlined-age-simple"
+                >
+                  Forma de pagamento
+                </InputLabel>
+                <Select
+                  value={paymentMode}
+                  onChange={this.handleChange}
+                  disabled={!user}
+                  input={
+                    <OutlinedInput
+                      labelWidth={this.state.labelWidth}
+                      name="paymentMode"
+                      id="outlined-age-simple"
+                    />
+                  }
+                >
+                  <MenuItem value={10}>Cartão</MenuItem>
+                  <MenuItem value={20}>A vista</MenuItem>
+                  <MenuItem value={30}>Fiado</MenuItem>
+                </Select>
+              </FormControl>
+              {paymentMode === 10 && (
+                <div>
+                  <FormControl
+                    variant="outlined"
+                    className={classNames(
+                      classes.formControl,
+                      classes.formControlInline,
+                      classes.formControlMedium
+                    )}
+                  >
+                    <TextField
+                      onChange={this.handleChange}
+                      name="cardNumber"
+                      value={cardNumber}
+                      id="outlined-number-card"
+                      label="Numero do cartão"
+                      variant="outlined"
+                    />
+                  </FormControl>
+                  <FormControl
+                    variant="outlined"
+                    className={classNames(
+                      classes.formControl,
+                      classes.formControlInline
+                    )}
+                  >
+                    <TextField
+                      onChange={this.handleChange}
+                      name="cardCvv"
+                      value={cardCvv}
+                      id="outlined-number-cvv"
+                      label="Cvv"
+                      variant="outlined"
+                    />
+                  </FormControl>
+                </div>
+              )}
+              {paymentMode === 20 && (
+                <div>
+                  <FormControl
+                    variant="outlined"
+                    className={classNames(
+                      classes.formControl,
+                      classes.formControlInline,
+                      classes.formControlMedium
+                    )}
+                  >
+                    <TextField
+                      onChange={this.handleChange}
+                      name="payedValue"
+                      value={this.state.payedValue}
+                      id="outlined-payed-value"
+                      label="Valor pago"
+                      variant="outlined"
+                    />
+                  </FormControl>
+                </div>
+              )}
+            </form>
+            <h3>Total da compra R$ {location.state.value}</h3>
+            <h3>Valor pago R$ {this.state.payedValue}</h3>
+            {paymentMode === 20 && <h3>Troco R$ {change > 0 ? change : 0}</h3>}
+            <Button
+              style={{ position: 'absolute', right: 24 }}
+              variant="contained"
+              color="secondary"
+              disabled={buttonDisabled}
+              onClick={this.clean}
+            >
+              {paymentMode === 30 ? 'Só amanhã' : 'Fechar Compra'}
             </Button>
+          </div>
+          <div style={{ padding: 16, width: '30%' }}>
+            <Typography
+              variant="h5"
+              gutterBottom
+              style={{ fontWeight: 800, marginBottom: 8 }}
+            >
+              Resumo da compra
+            </Typography>
+            <div className={classes.productListContent}>
+              {location.state.items.map((p, idx) => (
+                <Card
+                  key={p.id}
+                  style={{
+                    boxShadow: 'none',
+                    border: '1px solid #ececec',
+                    padding: 16,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    marginBottom: 8
+                  }}
+                >
+                  <div style={{ display: 'flex' }}>
+                    <div>
+                      <img src={p.image} style={{ width: 50 }} alt="produto" />
+                    </div>
+                    <div style={{ marginLeft: 16 }}>
+                      <div style={{ marginBottom: 4 }}>{`${idx + 1} - ${
+                        p.name
+                      }`}</div>
+                      <Typography
+                        variant="caption"
+                        gutterBottom
+                        style={{ fontWeight: 800, color: 'rgba(0, 0, 0, 0.8)' }}
+                      >
+                        {`Preço: R$ ${p.prodValue}`}
+                      </Typography>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     );
