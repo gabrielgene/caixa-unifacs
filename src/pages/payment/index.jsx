@@ -1,4 +1,6 @@
 import React from 'react';
+import classNames from 'classnames';
+
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -23,6 +25,12 @@ const styles = theme => ({
     marginBottom: theme.spacing.unit,
     marginTop: theme.spacing.unit,
     minWidth: 120,
+  },
+  formControlMedium: {
+    minWidth: 350,
+  },
+  formControlInline: {
+    marginRight: 16,
   },
   selectEmpty: {
     marginTop: theme.spacing.unit * 2
@@ -53,7 +61,11 @@ class Payment extends React.Component {
   state = {
     paymentMode: '',
     cod: '',
-    labelWidth: 0
+    labelWidth: 0,
+    payedValue: 0,
+    change: 0,
+    cardNumber: '',
+    cardCvv: '',
   };
 
   componentDidMount() {
@@ -63,16 +75,41 @@ class Payment extends React.Component {
   }
 
   handleChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
+    const { name, value } = event.target;
+    if (name === 'paymentMode' && value === 10) {
+      this.setState({
+        payedValue: this.props.location.state.value,
+      });
+    }
+    this.setState({ [name]: value });
   };
+
+  clean = () => {
+    this.setState({
+      paymentMode: '',
+      cod: '',
+      labelWidth: 0,
+      payedValue: 0,
+      change: 0,
+      cardNumber: '',
+      cardCvv: '',
+    })
+  }
 
   render() {
     const { classes, location, history } = this.props;
-    const { cod, paymentMode } = this.state;
+    const { cod, paymentMode, cardCvv, cardNumber, payedValue } = this.state;
+
     const user = cod > 0 && cod < 4 ? cod : false;
     if (!location.state) {
       history.push('/caixa');
     }
+
+    const change = payedValue - location.state.value
+
+    const buttonDisabled = !((!!cardNumber && !!cardCvv) || !!payedValue)
+
+    console.log(this.state);
 
     return (
       <div>
@@ -166,19 +203,79 @@ class Payment extends React.Component {
                 <MenuItem value={30}>Fiado</MenuItem>
               </Select>
             </FormControl>
+            {paymentMode === 10 && (
+              <div>
+                <FormControl
+                  variant="outlined"
+                  className={
+                    classNames(classes.formControl, classes.formControlInline, classes.formControlMedium)
+                  }
+                >
+                  <TextField
+                    onChange={this.handleChange}
+                    name="cardNumber"
+                    value={cardNumber}
+                    id="outlined-number-card"
+                    label="Numero do cartão"
+                    variant="outlined"
+                  />
+                </FormControl>
+                <FormControl
+                  variant="outlined"
+                  className={classNames(classes.formControl, classes.formControlInline)}
+                >
+                  <TextField
+                    onChange={this.handleChange}
+                    name="cardCvv"
+                    value={cardCvv}
+                    id="outlined-number-cvv"
+                    label="Cvv"
+                    variant="outlined"
+                  />
+                </FormControl>
+              </div>
+            )}
+            {paymentMode === 20 && (
+              <div>
+                <FormControl
+                  variant="outlined"
+                  className={
+                    classNames(classes.formControl, classes.formControlInline, classes.formControlMedium)
+                  }
+                >
+                  <TextField
+                    onChange={this.handleChange}
+                    name="payedValue"
+                    value={this.state.payedValue}
+                    id="outlined-payed-value"
+                    label="Valor pago"
+                    variant="outlined"
+                  />
+                </FormControl>
+              </div>
+            )}
           </form>
-          {console.log(location.state.items)}
-          {location.state.items.map(p => (
+          <h3>Total da compra R$ {location.state.value}</h3>
+          <h3>Valor pago R$ {this.state.payedValue}</h3>
+          <h3>Troco R$ {change > 0 ? change : 0}</h3>
+          {/* {location.state.items.map(p => (
             <div>
               <img src={p.image} style={{ width: 100 }} alt="produto" />
               <h3>{p.name}</h3>
               <h3>{`R$ ${p.prodValue}`}</h3>
               <h3>{`Quantidade: ${p.qtd}`}</h3>
             </div>
-          ))}
-          <h3>Total da compra</h3>
-          <h3>Valor pago</h3>
-          <h3>Troco</h3>
+          ))} */}
+          <Button
+            style={{ position: 'absolute', right: 24 }}
+            variant="contained"
+            color="secondary"
+            disabled={buttonDisabled}
+            onClick={this.clean}
+          >
+
+            {paymentMode === 30 ? 'Só amanhã' : 'Fechar Compra'}
+            </Button>
         </div>
       </div>
     );
