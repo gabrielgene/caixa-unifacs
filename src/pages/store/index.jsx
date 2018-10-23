@@ -101,8 +101,18 @@ const styles = theme => ({
   },
   productList: {
     width: '30%',
-    padding: 16,
     backgroundColor: '#fafafa'
+  },
+  productListHeader: {
+    paddingTop: 16,
+    paddingLeft: 16,
+    paddingRight: 16
+  },
+  productListContent: {
+    height: 'calc(100vh - 148px)',
+    overflow: 'auto',
+    paddingLeft: 8,
+    paddingRight: 8
   },
   productResume: {
     width: '20%',
@@ -186,8 +196,8 @@ class Store extends React.Component {
     const { cod, items, qtd, prodValue, value } = this.state;
     this.setState({
       items: [...items, { ...products[cod], qtd, prodValue }],
-      value: value + prodValue,
-      cod: ''
+      value: value + prodValue
+      // cod: ''
     });
   };
 
@@ -295,63 +305,67 @@ class Store extends React.Component {
             </div>
           </div>
           <div className={classes.productList}>
-            <Typography
-              variant="h5"
-              gutterBottom
-              style={{ fontWeight: 800, marginBottom: 8 }}
-            >
-              Produtos no carrinho
-            </Typography>
-            <Typography
-              variant="caption"
-              gutterBottom
-              className={classes.caption}
-            >
-              {items.length} produtos
-            </Typography>
-            {items.map((p, idx) => (
-              <Card
-                key={p.id}
-                style={{
-                  boxShadow: 'none',
-                  border: '1px solid #ececec',
-                  padding: 16,
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  marginBottom: 8
-                }}
+            <div className={classes.productListHeader}>
+              <Typography
+                variant="h5"
+                gutterBottom
+                style={{ fontWeight: 800, marginBottom: 8 }}
               >
-                <div style={{ display: 'flex' }}>
-                  <div>
-                    <img src={p.image} style={{ width: 50 }} alt="produto" />
+                Produtos no carrinho
+              </Typography>
+              <Typography
+                variant="caption"
+                gutterBottom
+                className={classes.caption}
+              >
+                {items.length} produtos
+              </Typography>
+            </div>
+            <div className={classes.productListContent}>
+              {items.map((p, idx) => (
+                <Card
+                  key={p.id}
+                  style={{
+                    boxShadow: 'none',
+                    border: '1px solid #ececec',
+                    padding: 16,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    marginBottom: 8
+                  }}
+                >
+                  <div style={{ display: 'flex' }}>
+                    <div>
+                      <img src={p.image} style={{ width: 50 }} alt="produto" />
+                    </div>
+                    <div style={{ marginLeft: 16 }}>
+                      <div style={{ marginBottom: 4 }}>{`${idx + 1} - ${
+                        p.name
+                      }`}</div>
+                      <Typography
+                        variant="caption"
+                        gutterBottom
+                        style={{ marginBottom: 4 }}
+                      >
+                        {`Quantidade: ${p.qtd}`}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        gutterBottom
+                        style={{ fontWeight: 800, color: 'rgba(0, 0, 0, 0.8)' }}
+                      >
+                        {`Preço: R$ ${p.prodValue}`}
+                      </Typography>
+                    </div>
                   </div>
-                  <div style={{ marginLeft: 16 }}>
-                    <div style={{ marginBottom: 4 }}>{`${idx + 1} - ${
-                      p.name
-                    }`}</div>
-                    <Typography
-                      variant="caption"
-                      gutterBottom
-                      style={{ marginBottom: 4 }}
-                    >
-                      {`Quantidade: ${p.qtd}`}
-                    </Typography>
-                    <Typography
-                      variant="caption"
-                      gutterBottom
-                      style={{ fontWeight: 800, color: 'rgba(0, 0, 0, 0.8)' }}
-                    >
-                      {`Preço: R$ ${p.prodValue}`}
-                    </Typography>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <IconButton onClick={() => this.onDelete(idx)}>
+                      <CloseIcon />
+                    </IconButton>
                   </div>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <IconButton onClick={() => this.onDelete(idx)}>
-                    <CloseIcon />
-                  </IconButton>
-                </div>
-              </Card>
-            ))}
+                </Card>
+              ))}
+            </div>
           </div>
           <div className={classes.productResume}>
             <Typography
