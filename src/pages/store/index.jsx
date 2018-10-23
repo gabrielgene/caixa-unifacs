@@ -196,8 +196,8 @@ class Store extends React.Component {
     const { cod, items, qtd, prodValue, value } = this.state;
     this.setState({
       items: [...items, { ...products[cod], qtd, prodValue }],
-      value: value + prodValue
-      // cod: ''
+      value: value + prodValue,
+      cod: ''
     });
   };
 
