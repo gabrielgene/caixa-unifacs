@@ -133,7 +133,7 @@ class Payment extends React.Component {
 
     const change = payedValue - location.state.value;
 
-    const buttonDisabled = !((!!cardNumber && !!cardCvv) || !!payedValue);
+    const buttonDisabled = !((!!cardNumber && !!cardCvv) || (!!payedValue && paymentMode !== 10));
 
     return (
       <div>
@@ -296,7 +296,7 @@ class Payment extends React.Component {
               disabled={buttonDisabled}
               onClick={this.clean}
             >
-              {paymentMode === 30 ? 'Só amanhã' : 'Fechar Compra'}
+              {paymentMode === 30 ? 'Só amanhã' : 'Concluir compra'}
             </Button>
           </div>
           <div style={{ padding: 16, width: '30%' }}>
@@ -349,14 +349,14 @@ class Payment extends React.Component {
             aria-describedby="alert-dialog-description"
           >
             <DialogTitle id="alert-dialog-title">
-              {'Deseja finalizar compra?'}
+              {'Deseja concluir compra?'}
             </DialogTitle>
             <DialogActions>
               <Button onClick={this.dialogClose} color="primary">
                 Voltar
               </Button>
               <Button onClick={this.clean} color="primary" autoFocus>
-                Finalizar
+                Concluir
               </Button>
             </DialogActions>
           </Dialog>
