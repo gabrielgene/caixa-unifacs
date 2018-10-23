@@ -294,7 +294,7 @@ class Payment extends React.Component {
               variant="contained"
               color="secondary"
               disabled={buttonDisabled}
-              onClick={this.clean}
+              onClick={this.dialogOpen}
             >
               {paymentMode === 30 ? 'Só amanhã' : 'Concluir compra'}
             </Button>
