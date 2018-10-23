@@ -133,7 +133,10 @@ class Payment extends React.Component {
 
     const change = payedValue - location.state.value;
 
-    const buttonDisabled = !((!!cardNumber && !!cardCvv) || (!!payedValue && paymentMode !== 10));
+    const buttonDisabled = !(
+      ((!!cardNumber && !!cardCvv) ||
+      (!!payedValue && paymentMode !== 10)) && payedValue >= location.state.value
+    );
 
     return (
       <div>
@@ -355,7 +358,7 @@ class Payment extends React.Component {
               <Button onClick={this.dialogClose} color="primary">
                 Voltar
               </Button>
-              <Button onClick={this.clean} color="primary" autoFocus>
+              <Button onClick={() => history.push('/caixa')} color="primary" autoFocus>
                 Concluir
               </Button>
             </DialogActions>
