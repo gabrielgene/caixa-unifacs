@@ -15,6 +15,9 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 const styles = theme => ({
   root: {
@@ -70,7 +73,8 @@ class Payment extends React.Component {
     payedValue: 0,
     change: 0,
     cardNumber: '',
-    cardCvv: ''
+    cardCvv: '',
+    isConfirming: false
   };
 
   componentDidMount() {
@@ -81,12 +85,26 @@ class Payment extends React.Component {
 
   handleChange = event => {
     const { name, value } = event.target;
-    if (name === 'paymentMode' && value === 10) {
+    if (name === 'paymentMode') {
       this.setState({
-        payedValue: this.props.location.state.value
+        cardNumber: '',
+        cardCvv: '',
+        payedValue: value === 10 ? this.props.location.state.value : 0
       });
     }
     this.setState({ [name]: value });
+  };
+
+  dialogClose = () => {
+    this.setState({
+      isConfirming: false
+    });
+  };
+
+  dialogOpen = () => {
+    this.setState({
+      isConfirming: true
+    });
   };
 
   clean = () => {
@@ -97,8 +115,11 @@ class Payment extends React.Component {
       payedValue: 0,
       change: 0,
       cardNumber: '',
-      cardCvv: ''
+      cardCvv: '',
+      isConfirming: false
     });
+
+    this.dialogClose();
   };
 
   render() {
@@ -270,7 +291,6 @@ class Payment extends React.Component {
             <h3>Valor pago R$ {this.state.payedValue}</h3>
             {paymentMode === 20 && <h3>Troco R$ {change > 0 ? change : 0}</h3>}
             <Button
-              style={{ position: 'absolute', right: 24 }}
               variant="contained"
               color="secondary"
               disabled={buttonDisabled}
@@ -321,6 +341,25 @@ class Payment extends React.Component {
               ))}
             </div>
           </div>
+
+          <Dialog
+            open={this.state.isConfirming}
+            onClose={this.dialogClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              {'Deseja finalizar compra?'}
+            </DialogTitle>
+            <DialogActions>
+              <Button onClick={this.dialogClose} color="primary">
+                Voltar
+              </Button>
+              <Button onClick={this.clean} color="primary" autoFocus>
+                Finalizar
+              </Button>
+            </DialogActions>
+          </Dialog>
         </div>
       </div>
     );
