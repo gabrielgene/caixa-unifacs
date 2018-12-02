@@ -11,7 +11,7 @@ const createErrorHandler = defaultValue => res => {
 };
 
 export const createUser = user => {
-  return fetch('/api/user', {
+  return fetch('https://caixa-unifacs.herokuapp.com/api/user', {
     credentials: 'same-origin',
     method: 'post',
     headers: {
@@ -25,7 +25,7 @@ export const createUser = user => {
 };
 
 export const createCustomer = customer => {
-  return fetch('/api/client', {
+  return fetch('https://caixa-unifacs.herokuapp.com/api/client', {
     credentials: 'same-origin',
     method: 'post',
     headers: {
@@ -39,7 +39,7 @@ export const createCustomer = customer => {
 };
 
 export const createProduct = product => {
-  return fetch('/api/product', {
+  return fetch('https://caixa-unifacs.herokuapp.com/api/product', {
     credentials: 'same-origin',
     method: 'post',
     headers: {
@@ -53,7 +53,7 @@ export const createProduct = product => {
 };
 
 export const authOperator = auth => {
-  return fetch('/api/auth/operator', {
+  return fetch('https://caixa-unifacs.herokuapp.com/api/auth/operator', {
     credentials: 'same-origin',
     method: 'post',
     headers: {
@@ -67,7 +67,7 @@ export const authOperator = auth => {
 };
 
 export const authAdmin = auth => {
-  return fetch('/api/auth/admin', {
+  return fetch('https://caixa-unifacs.herokuapp.com/api/auth/admin', {
     credentials: 'same-origin',
     method: 'post',
     headers: {
@@ -81,7 +81,7 @@ export const authAdmin = auth => {
 };
 
 export const getProducts = () => {
-  return fetch('/api/product', {
+  return fetch('https://caixa-unifacs.herokuapp.com/api/product', {
     credentials: 'same-origin',
     method: 'GET',
     headers: {
@@ -93,7 +93,7 @@ export const getProducts = () => {
 };
 
 export const getClients = () => {
-  return fetch('/api/client', {
+  return fetch('https://caixa-unifacs.herokuapp.com/api/client', {
     credentials: 'same-origin',
     method: 'GET',
     headers: {
@@ -105,7 +105,7 @@ export const getClients = () => {
 };
 
 export const submitPurchase = purchase => {
-  return fetch('/api/history', {
+  return fetch('https://caixa-unifacs.herokuapp.com/api/history', {
     credentials: 'same-origin',
     method: 'post',
     headers: {
@@ -119,7 +119,7 @@ export const submitPurchase = purchase => {
 };
 
 export const getHistory = () => {
-  return fetch('/api/history', {
+  return fetch('https://caixa-unifacs.herokuapp.com/api/history', {
     credentials: 'same-origin',
     method: 'GET',
     headers: {
