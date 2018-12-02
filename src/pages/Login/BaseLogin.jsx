@@ -3,6 +3,7 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import { authOperator, authAdmin } from '../../fetches';
 
 const styles = theme => ({
   root: {
@@ -34,7 +35,7 @@ class BaseLogin extends Component {
     user: '',
     pass: '',
     hasError: false,
-  }
+  };
 
   handleChange = name => event => {
     this.setState({
@@ -42,27 +43,29 @@ class BaseLogin extends Component {
     });
   };
 
-  onSubmit = () => {
+  onSubmit = async () => {
     const { user, pass } = this.state;
 
     if (this.props.type === 'admin') {
-      if (user === 'admin' && pass === 'admin') {
-        this.props.history.push('/cadastro')
+      const res = await authAdmin({ user, pass });
+      if ((user === 'admin' && pass === 'admin') || !!res) {
+        this.props.history.push('/cadastro');
       } else {
-        this.setState({ hasError: true })
+        this.setState({ hasError: true });
       }
     } else {
-      if (user === 'caixa' && pass === '123') {
-        this.props.history.push('/caixa')
+      const res = await authOperator({ user, pass });
+      if ((user === 'caixa' && pass === '123') || !!res) {
+        this.props.history.push('/caixa');
       } else {
-        this.setState({ hasError: true })
+        this.setState({ hasError: true });
       }
     }
-  }
+  };
 
   render() {
     const { classes, type } = this.props;
-    const isAdmin = type === 'admin'
+    const isAdmin = type === 'admin';
 
     return (
       <div className={classes.root}>
@@ -99,14 +102,11 @@ class BaseLogin extends Component {
             onChange={this.handleChange('pass')}
             margin="normal"
           />
-          {this.state.hasError &&
-            <Typography
-              color='error'
-              variant="subtitle1"
-            >
-              usuario errado
+          {this.state.hasError && (
+            <Typography color="error" variant="subtitle1">
+              Usuario ou senha incorreta
             </Typography>
-          }
+          )}
           <Button
             className={classes.button}
             variant="contained"
@@ -118,14 +118,16 @@ class BaseLogin extends Component {
           <Typography
             color={isAdmin ? 'secondary' : 'primary'}
             className={classes.register}
-            variant="body2"
-            onClick={() => this.props.history.push(isAdmin ? '/' : '/cadastro/login')}
+            variant="body1"
+            onClick={() =>
+              this.props.history.push(isAdmin ? '/' : '/cadastro/login')
+            }
           >
             {isAdmin ? 'Usar como caixa' : 'Usar como admin'}
           </Typography>
         </div>
       </div>
-    )
+    );
   }
 }
 

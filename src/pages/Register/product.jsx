@@ -2,6 +2,8 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import FormLabel from '@material-ui/core/FormLabel';
+import Button from '@material-ui/core/Button';
+import { createProduct } from '../../fetches';
 
 const styles = theme => ({
   container: {
@@ -21,9 +23,10 @@ const styles = theme => ({
 class ProductForm extends React.Component {
   state = {
     name: '',
-    qtd: '',
-    description: '',
-    productCode: '',
+    picture: '',
+    cod: '',
+    price: 0,
+    amount: '',
   };
 
   handleChange = name => event => {
@@ -32,60 +35,85 @@ class ProductForm extends React.Component {
     });
   };
 
+  handleSubmit = () => {
+    createProduct(this.state);
+    this.setState({
+      name: '',
+      picture: '',
+      cod: '',
+      price: 0,
+      amount: '',
+    });
+  };
+
   render() {
     const { classes } = this.props;
 
     return (
-      <form className={classes.container} noValidate autoComplete="off">
-        <FormLabel component="legend">Cadastrar <strong>Produto</strong></FormLabel>
-        <TextField
-          id="name"
-          label="Nome do produto"
-          fullWidth
-          className={classes.textField}
-          value={this.state.name}
-          onChange={this.handleChange('name')}
-          margin="normal"
-          variant="outlined"
-        />
-        <TextField
-          id="description"
-          label="Descrição"
-          multiline
-          rowsMax="4"
-          value={this.state.multiline}
-          onChange={this.handleChange('description')}
-          className={classes.textField}
-          margin="normal"
-          variant="outlined"
-        />
-        <TextField
-          id="productCode"
-          label="Código do produto"
-          value={this.state.productCode}
-          onChange={this.handleChange('productCode')}
-          type="number"
-          className={classes.textField}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          margin="normal"
-          variant="outlined"
-        />
-        <TextField
-          id="qtd"
-          label="quantidade em estoque"
-          value={this.state.qtd}
-          onChange={this.handleChange('qtd')}
-          type="number"
-          className={classes.textField}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          margin="normal"
-          variant="outlined"
-        />
-      </form>
+      <div>
+        <form className={classes.container} noValidate autoComplete="off">
+          <FormLabel component="legend">
+            Cadastrar <strong>Produto</strong>
+          </FormLabel>
+          <TextField
+            id="name"
+            label="Nome do produto"
+            fullWidth
+            className={classes.textField}
+            value={this.state.name}
+            onChange={this.handleChange('name')}
+            margin="normal"
+            variant="outlined"
+          />
+          <TextField
+            id="picture"
+            label="Imagem"
+            value={this.state.picture}
+            onChange={this.handleChange('picture')}
+            className={classes.textField}
+            margin="normal"
+            variant="outlined"
+          />
+          <TextField
+            id="price"
+            label="Preço"
+            type="number"
+            value={this.state.price}
+            onChange={this.handleChange('price')}
+            className={classes.textField}
+            margin="normal"
+            variant="outlined"
+          />
+          <TextField
+            id="productCode"
+            label="Código do produto"
+            value={this.state.cod}
+            onChange={this.handleChange('cod')}
+            className={classes.textField}
+            margin="normal"
+            variant="outlined"
+          />
+          <TextField
+            id="amount"
+            label="Quantidade em estoque"
+            value={this.state.amount}
+            onChange={this.handleChange('amount')}
+            type="number"
+            className={classes.textField}
+            margin="normal"
+            variant="outlined"
+          />
+        </form>
+        <Button
+          onClick={this.handleSubmit}
+          variant="contained"
+          color="primary"
+          className={classes.button}
+          style={{ marginLeft: 8 }}
+        >
+          Cadastrar
+        </Button>
+      </div>
     );
   }
 }

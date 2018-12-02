@@ -1,8 +1,9 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import FormLabel from '@material-ui/core/FormLabel';
+import Button from '@material-ui/core/Button';
+import { createCustomer } from '../../fetches';
 
 const styles = theme => ({
   container: {
@@ -22,26 +23,11 @@ const styles = theme => ({
   },
 });
 
-const genders = [
-  {
-    value: 'male',
-    label: 'Masculino',
-  },
-  {
-    value: 'female',
-    label: 'Feminino',
-  },
-  {
-    value: 'other',
-    label: 'Outro',
-  },
-];
-
 class CustomerForm extends React.Component {
   state = {
     name: '',
-    phone: '',
-    gender: '',
+    picture: '',
+    cod: '',
   };
 
   handleChange = name => event => {
@@ -50,55 +36,64 @@ class CustomerForm extends React.Component {
     });
   };
 
+  handleSubmit = () => {
+    createCustomer(this.state);
+    this.setState({
+      name: '',
+      picture: '',
+      cod: '',
+    });
+  };
+
   render() {
     const { classes } = this.props;
 
     return (
-      <form className={classes.container} noValidate autoComplete="off">
-        <FormLabel component="legend">Cadastrar <strong>Cliente</strong></FormLabel>
-        <TextField
-          id="name"
-          label="Nome"
-          fullWidth
-          className={classes.textField}
-          value={this.state.name}
-          onChange={this.handleChange('name')}
-          margin="normal"
-          variant="outlined"
-        />
-        <TextField
-          id="phone"
-          label="Telefone para contato"
-          type="tel"
-          className={classes.textField}
-          value={this.state.phone}
-          onChange={this.handleChange('phone')}
-          margin="normal"
-          variant="outlined"
-        />
-        <TextField
-          id="gender"
-          select
-          label="Select"
-          className={classes.textField}
-          value={this.state.gender}
-          onChange={this.handleChange('gender')}
-          helperText="Selecione o tipo de usuário"
-          SelectProps={{
-            MenuProps: {
-              className: classes.menu,
-            },
-          }}
-          margin="normal"
-          variant="outlined"
+      <div>
+        <form className={classes.container} noValidate autoComplete="off">
+          <FormLabel component="legend">
+            Cadastrar <strong>Cliente</strong>
+          </FormLabel>
+          <TextField
+            id="name"
+            label="Nome"
+            fullWidth
+            className={classes.textField}
+            value={this.state.name}
+            onChange={this.handleChange('name')}
+            margin="normal"
+            variant="outlined"
+          />
+          <TextField
+            id="picture"
+            label="Foto"
+            fullWidth
+            className={classes.textField}
+            value={this.state.picture}
+            onChange={this.handleChange('picture')}
+            margin="normal"
+            variant="outlined"
+          />
+          <TextField
+            id="cod"
+            label="Código"
+            className={classes.textField}
+            value={this.state.cod}
+            onChange={this.handleChange('cod')}
+            margin="normal"
+            variant="outlined"
+          />
+        </form>
+        <Button
+          onClick={this.handleSubmit}
+          variant="contained"
+          color="primary"
+          className={classes.button}
+          style={{ marginLeft: 8 }}
         >
-          {genders.map(option => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </TextField>
-      </form>
+          Cadastrar
+        </Button>
+      </div>
     );
   }
 }

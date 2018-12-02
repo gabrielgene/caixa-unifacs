@@ -18,52 +18,47 @@ import Select from '@material-ui/core/Select';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import green from '@material-ui/core/colors/green';
+import { getClients, submitPurchase } from '../../fetches';
 
 const styles = theme => ({
   root: {
     display: 'flex',
     flexWrap: 'wrap',
-    flexGrow: 1
+    flexGrow: 1,
   },
   formControl: {
     marginBottom: theme.spacing.unit,
     marginTop: theme.spacing.unit,
-    minWidth: 120
+    minWidth: 120,
   },
   formControlMedium: {
-    minWidth: 350
+    minWidth: 350,
   },
   formControlInline: {
-    marginRight: 16
+    marginRight: 16,
   },
   selectEmpty: {
-    marginTop: theme.spacing.unit * 2
+    marginTop: theme.spacing.unit * 2,
   },
   icon: {
     marginLeft: 8,
-    marginRight: 8
+    marginRight: 8,
   },
   productListContent: {
     height: 'calc(100vh - 148px)',
-    overflow: 'auto'
-  }
+    overflow: 'auto',
+  },
+  buttonProgress: {
+    color: green[500],
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12,
+  },
 });
-
-const clientes = [
-  {},
-  {
-    image: 'https://avatars1.githubusercontent.com/u/26730826?s=460&v=4',
-    name: 'Peu'
-  },
-  {
-    image: 'https://avatars3.githubusercontent.com/u/19671668?s=460&v=4',
-    name: 'Genê'
-  },
-  {
-    image: 'https://avatars0.githubusercontent.com/u/22510441?s=460&v=4',
-    name: 'Ravi'
-  }
-];
 
 class Payment extends React.Component {
   state = {
@@ -74,12 +69,16 @@ class Payment extends React.Component {
     change: 0,
     cardNumber: '',
     cardCvv: '',
-    isConfirming: false
+    isConfirming: false,
+    clients: [],
+    load: false,
   };
 
-  componentDidMount() {
+  async componentDidMount() {
+    const clients = await getClients();
     this.setState({
-      labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth
+      labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,
+      clients,
     });
   }
 
@@ -89,7 +88,7 @@ class Payment extends React.Component {
       this.setState({
         cardNumber: '',
         cardCvv: '',
-        payedValue: value === 10 ? this.props.location.state.value : 0
+        payedValue: value === 10 ? this.props.location.state.value : 0,
       });
     }
     this.setState({ [name]: value });
@@ -97,14 +96,29 @@ class Payment extends React.Component {
 
   dialogClose = () => {
     this.setState({
-      isConfirming: false
+      isConfirming: false,
     });
   };
 
   dialogOpen = () => {
     this.setState({
-      isConfirming: true
+      isConfirming: true,
     });
+  };
+
+  handleSubmit = async () => {
+    this.setState({ load: true });
+    const { cod, payedValue, clients } = this.state;
+    const { items, value } = this.props.location.state;
+    const change = payedValue - value;
+    const purchase = {
+      user: clients.find(c => c.cod === cod),
+      products: items,
+      value,
+      change,
+    };
+    await submitPurchase(purchase);
+    this.props.history.push('/caixa');
   };
 
   clean = () => {
@@ -116,7 +130,7 @@ class Payment extends React.Component {
       change: 0,
       cardNumber: '',
       cardCvv: '',
-      isConfirming: false
+      isConfirming: false,
     });
 
     this.dialogClose();
@@ -134,8 +148,8 @@ class Payment extends React.Component {
     const change = payedValue - location.state.value;
 
     const buttonDisabled = !(
-      ((!!cardNumber && !!cardCvv) ||
-      (!!payedValue && paymentMode !== 10)) && payedValue >= location.state.value
+      ((!!cardNumber && !!cardCvv) || (!!payedValue && paymentMode !== 10)) &&
+      payedValue >= location.state.value
     );
 
     return (
@@ -163,8 +177,8 @@ class Payment extends React.Component {
                 style={{ width: 100, borderRadius: 60, padding: 8 }}
                 alt="cliente"
                 src={
-                  user
-                    ? clientes[cod].image
+                  user && !!this.state.clients.find(c => c.cod === cod)
+                    ? this.state.clients.find(c => c.cod === cod).picture
                     : 'https://i0.wp.com/azizilife.com/wp-content/uploads/2016/09/placeholder.jpg?ssl=1'
                 }
               />
@@ -174,14 +188,18 @@ class Payment extends React.Component {
                   gutterBottom
                   style={{ fontWeight: 800, marginBottom: 8 }}
                 >
-                  {user ? clientes[cod].name : ''}
+                  {user && !!this.state.clients.find(c => c.cod === cod)
+                    ? this.state.clients.find(c => c.cod === cod).name
+                    : ''}
                 </Typography>
                 <Typography
-                  variant="caption"
+                  variant="body1"
                   gutterBottom
                   className={classes.caption}
                 >
-                  {user ? `Código: ${cod}` : ''}
+                  {user && !!this.state.clients.find(c => c.cod === cod)
+                    ? `Código: ${cod}`
+                    : ''}
                 </Typography>
               </div>
             </div>
@@ -238,7 +256,7 @@ class Payment extends React.Component {
                     className={classNames(
                       classes.formControl,
                       classes.formControlInline,
-                      classes.formControlMedium
+                      classes.formControlMedium,
                     )}
                   >
                     <TextField
@@ -254,7 +272,7 @@ class Payment extends React.Component {
                     variant="outlined"
                     className={classNames(
                       classes.formControl,
-                      classes.formControlInline
+                      classes.formControlInline,
                     )}
                   >
                     <TextField
@@ -275,7 +293,7 @@ class Payment extends React.Component {
                     className={classNames(
                       classes.formControl,
                       classes.formControlInline,
-                      classes.formControlMedium
+                      classes.formControlMedium,
                     )}
                   >
                     <TextField
@@ -313,26 +331,30 @@ class Payment extends React.Component {
             <div className={classes.productListContent}>
               {location.state.items.map((p, idx) => (
                 <Card
-                  key={p.id}
+                  key={p._id}
                   style={{
                     boxShadow: 'none',
                     border: '1px solid #ececec',
                     padding: 16,
                     display: 'flex',
                     justifyContent: 'space-between',
-                    marginBottom: 8
+                    marginBottom: 8,
                   }}
                 >
                   <div style={{ display: 'flex' }}>
                     <div>
-                      <img src={p.image} style={{ width: 50 }} alt="produto" />
+                      <img
+                        src={p.picture}
+                        style={{ width: 50 }}
+                        alt="produto"
+                      />
                     </div>
                     <div style={{ marginLeft: 16 }}>
                       <div style={{ marginBottom: 4 }}>{`${idx + 1} - ${
                         p.name
                       }`}</div>
                       <Typography
-                        variant="caption"
+                        variant="body1"
                         gutterBottom
                         style={{ fontWeight: 800, color: 'rgba(0, 0, 0, 0.8)' }}
                       >
@@ -358,9 +380,15 @@ class Payment extends React.Component {
               <Button onClick={this.dialogClose} color="primary">
                 Voltar
               </Button>
-              <Button onClick={() => history.push('/caixa')} color="primary" autoFocus>
+              <Button onClick={this.handleSubmit} color="primary" autoFocus>
                 Concluir
               </Button>
+              {this.state.load && (
+                <CircularProgress
+                  size={24}
+                  className={classes.buttonProgress}
+                />
+              )}
             </DialogActions>
           </Dialog>
         </div>

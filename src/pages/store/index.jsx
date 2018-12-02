@@ -11,108 +11,36 @@ import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
 import ShopIcon from '@material-ui/icons/ShoppingCartOutlined';
 import InputAdornment from '@material-ui/core/InputAdornment';
-
-const products = {
-  1: {
-    id: 1,
-    name: 'Arroz Tio João',
-    value: 7,
-    image:
-      'https://www.paodeacucar.com/img/uploads/1/678/510678.jpg?type=product'
-  },
-  2: {
-    id: 2,
-    name: 'Vinho',
-    value: 70,
-    image:
-      'https://savegnago.vteximg.com.br/arquivos/ids/278721-1000-1000/VINHO-BRASILEIRO-CHALISE-750ML-SUAVE-TIN.jpg?v=636276558268370000'
-  },
-  3: {
-    id: 3,
-    name: 'Cerveja',
-    value: 4,
-    image:
-      'https://superprix.vteximg.com.br/arquivos/ids/175068-600-600/Cerveja-Eisenbahn-Pilsen-600ml.png?v=636280351726700000'
-  },
-  4: {
-    id: 4,
-    name: 'Suco',
-    value: 3,
-    image:
-      'https://araujo.vteximg.com.br/arquivos/ids/3765344-1000-1000/07894900660319.jpg?v=636386542513200000'
-  },
-  5: {
-    id: 5,
-    name: 'Biscoito',
-    value: 2.5,
-    image:
-      'https://staples.vteximg.com.br/arquivos/ids/220791-1000-1000/Biscoito-Amanteigado-11-5-g-Bauducco-BSCBDBCCA.jpg?v=636111097174000000'
-  },
-  6: {
-    id: 6,
-    name: 'Salgadinho',
-    value: 1,
-    image:
-      'https://www.deliveryextra.com.br/img/uploads/1/73/557073.png?type=product'
-  },
-  7: {
-    id: 7,
-    name: 'Coca-cola',
-    value: 6,
-    image:
-      'https://static.carrefour.com.br/medias/sys_master/images/images/h3d/heb/h00/h00/12175673917470.jpg'
-  },
-  8: {
-    id: 8,
-    name: 'Whisky',
-    value: 120,
-    image:
-      'https://www.paodeacucar.com/img/uploads/1/200/477200.jpg?type=product'
-  },
-  9: {
-    id: 9,
-    name: 'Fanta',
-    value: 3,
-    image:
-      'https://www.deliveryextra.com.br/img/uploads/1/921/546921.jpg?type=product'
-  },
-  10: {
-    id: 10,
-    name: 'Carne Kg',
-    value: 20,
-    image:
-      'https://png.pngtree.com/element_origin_min_pic/17/09/22/111a084f3a649a7c428e298040191c6c.jpg'
-  }
-};
+import { getProducts } from '../../fetches';
 
 const styles = theme => ({
   root: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   grow: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   content: {
-    display: 'flex'
+    display: 'flex',
   },
   product: {
     width: '50%',
-    padding: 16
+    padding: 16,
   },
   productList: {
     width: '30%',
-    backgroundColor: '#fafafa'
+    backgroundColor: '#fafafa',
   },
   productListHeader: {
     paddingTop: 16,
     paddingLeft: 16,
-    paddingRight: 16
+    paddingRight: 16,
   },
   productListContent: {
     height: 'calc(100vh - 148px)',
     overflow: 'auto',
     paddingLeft: 8,
-    paddingRight: 8
+    paddingRight: 8,
   },
   productResume: {
     width: '20%',
@@ -122,35 +50,35 @@ const styles = theme => ({
     padding: 16,
     marginLeft: 8,
     flexDirection: 'column',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   sideView: {
     width: '40%',
-    marginLeft: 2
+    marginLeft: 2,
   },
   demo: {
     overflow: 'auto',
     borderRight: '1px solid #dddddd',
     marginTop: 2,
     height: 310,
-    backgroundColor: theme.palette.background.paper
+    backgroundColor: theme.palette.background.paper,
   },
   info: {
-    display: 'flex'
+    display: 'flex',
   },
   input: {
-    margin: 16
+    margin: 16,
   },
   button: {
-    marginTop: 24
+    marginTop: 24,
   },
   icon: {
     marginLeft: 8,
-    marginRight: 8
+    marginRight: 8,
   },
   caption: {
-    marginBottom: 12
-  }
+    marginBottom: 12,
+  },
 });
 
 const defaultState = {
@@ -162,42 +90,53 @@ const defaultState = {
   prodName: '',
   img: '',
   itemsAmount: 0,
-  items: []
+  amount: 0,
+  items: [],
+  products: [],
 };
 
 class Store extends React.Component {
   state = {
-    ...defaultState
+    ...defaultState,
   };
+
+  async componentDidMount() {
+    const prod = await getProducts();
+    this.setState({ products: prod });
+  }
 
   handleChangeCod = event => {
     const { value } = event.target;
-    const product = products[value];
+    const product = this.state.products.find(p => p.cod === value);
     this.setState({
       cod: value,
-      img: product ? product.image : '',
+      img: product ? product.picture : '',
       prodName: product ? product.name : '',
-      prodValue: product ? product.value : 0,
-      qtd: 1
+      prodValue: product ? product.price : 0,
+      amount: product ? product.amount : 0,
+      qtd: 1,
     });
   };
 
   handleChangeAmount = event => {
     const { value } = event.target;
-    const { cod, prodValue } = this.state;
-    const product = products[cod];
+    const { cod, prodValue, products } = this.state;
+    const product = products.find(p => p.cod === cod);
     this.setState({
-      qtd: value,
-      prodValue: product ? product.value * value : prodValue * value
+      qtd: parseInt(value),
+      prodValue: product ? product.price * value : prodValue * value,
     });
   };
 
   onAddItem = () => {
-    const { cod, items, qtd, prodValue, value } = this.state;
+    const { cod, items, qtd, prodValue, value, products } = this.state;
     this.setState({
-      items: [...items, { ...products[cod], qtd, prodValue }],
+      items: [
+        ...items,
+        { ...products.find(p => p.cod === cod), qtd, prodValue },
+      ],
       value: value + prodValue,
-      cod: ''
+      cod: '',
     });
   };
 
@@ -206,13 +145,22 @@ class Store extends React.Component {
     const item = items.find((_, idx) => idx === index);
     this.setState({
       items: items.filter((_, idx) => idx !== index),
-      value: value - item.prodValue
+      value: value - item.prodValue,
     });
   };
 
   render() {
     const { classes, history } = this.props;
-    const { img, value, prodValue, prodName, cod, qtd, items } = this.state;
+    const {
+      img,
+      value,
+      prodValue,
+      prodName,
+      cod,
+      qtd,
+      items,
+      amount,
+    } = this.state;
 
     return (
       <div className={classes.root}>
@@ -222,6 +170,14 @@ class Store extends React.Component {
             <Typography variant="h6" color="inherit" className={classes.grow}>
               Meu Caixa
             </Typography>
+            <Button
+              variant="contained"
+              color="secondary"
+              style={{ marginRight: 8 }}
+              onClick={() => history.push('/caixa/historico')}
+            >
+              Histórico
+            </Button>
             <Button
               variant="contained"
               color="secondary"
@@ -235,7 +191,6 @@ class Store extends React.Component {
           <div className={classes.product}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <TextField
-                title="Temos produtos do codigo 1 até o 10"
                 id="outlined-name"
                 label="Código do produto"
                 className={classes.input}
@@ -259,7 +214,7 @@ class Store extends React.Component {
                 variant="contained"
                 color="primary"
                 size="large"
-                disabled={!cod}
+                disabled={!(cod && amount >= qtd)}
                 onClick={this.onAddItem}
               >
                 Adicionar
@@ -286,6 +241,15 @@ class Store extends React.Component {
                       />
                       <TextField
                         id="outlined-name"
+                        label="Estoque"
+                        className={classes.input}
+                        value={amount}
+                        margin="normal"
+                        variant="outlined"
+                        disabled
+                      />
+                      <TextField
+                        id="outlined-name"
                         label="Valor unitário"
                         className={classes.input}
                         value={Math.round(prodValue)}
@@ -294,7 +258,7 @@ class Store extends React.Component {
                         InputProps={{
                           startAdornment: (
                             <InputAdornment position="start">$</InputAdornment>
-                          )
+                          ),
                         }}
                         disabled
                       />
@@ -314,7 +278,7 @@ class Store extends React.Component {
                 Produtos no carrinho
               </Typography>
               <Typography
-                variant="caption"
+                variant="body1"
                 gutterBottom
                 className={classes.caption}
               >
@@ -324,33 +288,37 @@ class Store extends React.Component {
             <div className={classes.productListContent}>
               {items.map((p, idx) => (
                 <Card
-                  key={p.id}
+                  key={p._id}
                   style={{
                     boxShadow: 'none',
                     border: '1px solid #ececec',
                     padding: 16,
                     display: 'flex',
                     justifyContent: 'space-between',
-                    marginBottom: 8
+                    marginBottom: 8,
                   }}
                 >
                   <div style={{ display: 'flex' }}>
                     <div>
-                      <img src={p.image} style={{ width: 50 }} alt="produto" />
+                      <img
+                        src={p.picture}
+                        style={{ width: 50 }}
+                        alt="produto"
+                      />
                     </div>
                     <div style={{ marginLeft: 16 }}>
                       <div style={{ marginBottom: 4 }}>{`${idx + 1} - ${
                         p.name
                       }`}</div>
                       <Typography
-                        variant="caption"
+                        variant="body1"
                         gutterBottom
                         style={{ marginBottom: 4 }}
                       >
                         {`Quantidade: ${p.qtd}`}
                       </Typography>
                       <Typography
-                        variant="caption"
+                        variant="body1"
                         gutterBottom
                         style={{ fontWeight: 800, color: 'rgba(0, 0, 0, 0.8)' }}
                       >
@@ -369,7 +337,7 @@ class Store extends React.Component {
           </div>
           <div className={classes.productResume}>
             <Typography
-              variant="subtitle2"
+              variant="subtitle1"
               gutterBottom
               style={{ marginBottom: 8 }}
             >
@@ -383,7 +351,7 @@ class Store extends React.Component {
                 display: 'flex',
                 height: 30,
                 justifyContent: 'space-between',
-                width: '100%'
+                width: '100%',
               }}
             >
               <Button
@@ -402,7 +370,7 @@ class Store extends React.Component {
                 onClick={() =>
                   history.push({
                     pathname: '/caixa/pagamento',
-                    state: this.state
+                    state: this.state,
                   })
                 }
               >

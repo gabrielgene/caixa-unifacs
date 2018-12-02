@@ -8,7 +8,8 @@ import * as serviceWorker from './serviceWorker';
 import AdminLogin from './pages/Login/Admin';
 import StoreLogin from './pages/Login/Store';
 import Register from './pages/Register';
-import Payment from './pages/payment';
+import Payment from './pages/Payment';
+import History from './pages/History';
 
 const App = () => (
   <Router>
@@ -16,6 +17,7 @@ const App = () => (
       <Route exact path="/" component={StoreLogin} />
       <Route exact path="/caixa" component={Store} />
       <Route exact path="/caixa/pagamento" component={Payment} />
+      <Route exact path="/caixa/historico" component={History} />
 
       <Route exact path="/cadastro" component={Register} />
       <Route exact path="/cadastro/login" component={AdminLogin} />
